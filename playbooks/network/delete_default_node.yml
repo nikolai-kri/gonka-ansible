@@ -1,0 +1,19 @@
+---
+- name: Delete Network Node
+  hosts: node_net_deploy
+  become: true
+
+  tasks:
+    - name: Delete Default Node from Network Node
+      ansible.builtin.uri:
+        url: "http://localhost:9200/admin/v1/nodes/node1"
+        method: DELETE
+        headers:
+          Content-Type: application/json
+        return_content: true
+        status_code: [200, 204, 404]
+      register: delete_node_response
+
+    - name: Display Delete Node Response
+      ansible.builtin.debug:
+        var: delete_node_response

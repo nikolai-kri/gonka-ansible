@@ -1,0 +1,13 @@
+#SPDX-License-Identifier: MIT-0
+---
+galaxy_info:
+  description: Send a prepared message to Telegram via the Bot API.
+  license: MIT
+
+  min_ansible_version: "2.9"
+
+  galaxy_tags:
+    - telegram
+    - notification
+
+dependencies: []

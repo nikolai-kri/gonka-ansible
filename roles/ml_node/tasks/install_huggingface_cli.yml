@@ -1,0 +1,10 @@
+---
+- name: Check if huggingface_hub is installed
+  ansible.builtin.command: python3 -m pip show huggingface_hub
+  register: huggingface_hub_check
+  failed_when: false
+  changed_when: false
+
+- name: Install huggingface-cli
+  ansible.builtin.command: python3 -m pip install --break-system-packages huggingface_hub
+  when: huggingface_hub_check.rc != 0

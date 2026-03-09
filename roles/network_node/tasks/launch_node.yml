@@ -1,0 +1,6 @@
+---
+- name: Start Initial Services
+  ansible.builtin.shell: "cd {{ nvme_dir }}/gonka/deploy/join && source config.env && docker compose up tmkms node -d --no-deps"
+  args:
+    executable: /bin/bash
+    chdir: "{{ nvme_dir }}/gonka/deploy/join"

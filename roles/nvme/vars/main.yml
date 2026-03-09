@@ -1,0 +1,4 @@
+---
+nvme_device: /dev/nvme1n1 # какой диск форматируем (узнаешь через lsblk)
+nvme_fstype: ext4
+nvme_owner: ubuntu # пользователь, которому дать права на папку

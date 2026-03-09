@@ -1,0 +1,12 @@
+---
+- name: Register Network Node
+  hosts: node_net_deploy
+  become: true
+
+  tasks:
+    - name: Launch Network Node
+      ansible.builtin.shell: |
+        cd {{ nvme_dir }}/gonka/deploy/join
+        source config.env && docker compose -f docker-compose.yml up -d
+      args:
+        executable: /bin/bash

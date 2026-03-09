@@ -1,0 +1,6 @@
+---
+- ansible.builtin.import_tasks: install_pip.yml
+- ansible.builtin.import_tasks: download_gonka_git.yml
+- ansible.builtin.import_tasks: generate_config.yml
+- ansible.builtin.import_tasks: pull_docker_images.yml
+- ansible.builtin.import_tasks: launch_node.yml

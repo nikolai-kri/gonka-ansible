@@ -1,0 +1,14 @@
+---
+description: File names use lowercase and underscores (snake_case) only
+alwaysApply: true
+---
+
+# File naming
+
+- **File names**: Use **lowercase** only. Separate words with **underscores** (snake_case).
+- **Examples**: `start_vllm.sh`, `check_node_config.sh`, `update_node_max_model_len.sh`, `my_script.py`, `config_loader.yml`
+- **Avoid**: hyphens (`my-script.sh`), camelCase (`myScript.sh`), spaces, uppercase in names.
+
+**Exceptions** (may be kept as-is): `README.md`, `CONTRIBUTING.md`, and `LICENSE` at repo root or inside roles — these names are widely expected by tools and platforms.
+
+When creating or renaming files in this project, always follow this convention.

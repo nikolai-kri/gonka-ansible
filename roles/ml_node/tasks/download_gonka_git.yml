@@ -1,0 +1,7 @@
+---
+- name: Download Deployment Files
+  ansible.builtin.git:
+    repo: https://github.com/gonka-ai/gonka.git
+    dest: "{{ nvme_dir }}/gonka"
+    version: main
+    update: false

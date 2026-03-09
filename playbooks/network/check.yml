@@ -1,0 +1,7 @@
+---
+- name: Check Status
+  hosts: network_node
+  become: true
+
+  roles:
+    - network_report

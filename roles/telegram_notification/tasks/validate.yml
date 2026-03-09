@@ -1,0 +1,30 @@
+---
+- name: Output error – missing telegram_bot_token
+  ansible.builtin.debug:
+    msg: "Missing required variable: telegram_bot_token. Set it in inventory/group_vars/all (get token from @BotFather)."
+  when: telegram_bot_token is not defined or telegram_bot_token | default('') | length == 0
+
+- name: Output error – missing telegram_chat_id
+  ansible.builtin.debug:
+    msg: "Missing required variable: telegram_chat_id. Set it in inventory/group_vars/all or group_vars/node (get chat_id from https://api.telegram.org/bot<TOKEN>/getUpdates)."
+  when: telegram_chat_id is not defined or telegram_chat_id | default('') | length == 0
+
+- name: Output error – no message source
+  ansible.builtin.debug:
+    msg: "Missing message source: set one of telegram_message, telegram_template, or has_error so the role can build or use a message."
+  when: >-
+    (telegram_message is not defined or telegram_message | default('') | length == 0)
+    and (telegram_template is not defined or telegram_template | default('') | length == 0)
+    and (has_error is not defined)
+
+- name: Fail when required Telegram variables are missing
+  ansible.builtin.fail:
+    msg: "Telegram role: one or more required variables are missing. See messages above."
+  when: >-
+    (telegram_bot_token is not defined or telegram_bot_token | default('') | length == 0)
+    or (telegram_chat_id is not defined or telegram_chat_id | default('') | length == 0)
+    or (
+      (telegram_message is not defined or telegram_message | default('') | length == 0)
+      and (telegram_template is not defined or telegram_template | default('') | length == 0)
+      and (has_error is not defined)
+    )

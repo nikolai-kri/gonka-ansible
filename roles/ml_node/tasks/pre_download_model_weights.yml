@@ -1,0 +1,11 @@
+---
+- name: Pre-download Model Weights to Hugging Face Cache
+  ansible.builtin.shell: cd {{ nvme_dir }}/gonka/deploy/join && source config.env && mkdir -p $HF_HOME && hf download Qwen/Qwen3-235B-A22B-Instruct-2507-FP8 && hf download Qwen/Qwen3-32B-FP8
+  args:
+    executable: /bin/bash
+    creates: "{{ hf_cache }}/.check_for_update_done"
+  register: hf_output
+
+- name: Print hf output
+  ansible.builtin.debug:
+    var: hf_output.stdout

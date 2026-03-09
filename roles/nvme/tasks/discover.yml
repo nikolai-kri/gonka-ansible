@@ -1,0 +1,8 @@
+---
+- name: Show block devices (lsblk)
+  ansible.builtin.command: lsblk -o NAME,SIZE,TYPE,MOUNTPOINT
+  register: lsblk_output
+
+- name: Print lsblk output
+  ansible.builtin.debug:
+    var: lsblk_output.stdout_lines

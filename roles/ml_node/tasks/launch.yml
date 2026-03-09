@@ -1,0 +1,11 @@
+---
+- name: Launch the Inference Node
+  community.docker.docker_compose_v2:
+    project_src: "{{ nvme_dir }}/gonka/deploy/join"
+    files:
+      - docker-compose.mlnode.yml
+    state: present
+  register: dc_output
+
+# - debug:
+    # var: dc_output

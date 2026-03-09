@@ -1,0 +1,17 @@
+---
+- name: Check setup
+  hosts: network_node
+  become: true
+
+  tasks:
+    - name: Check if setup installed
+      ansible.builtin.shell: |
+        git --version
+        docker --version
+        pip --version
+        hf version
+      register: results
+
+    - name: Print versions
+      ansible.builtin.debug:
+        var: results.stdout

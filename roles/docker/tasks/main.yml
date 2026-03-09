@@ -1,0 +1,6 @@
+---
+# - import_tasks: containerd_on_nvme.yml
+- ansible.builtin.import_tasks: install_docker.yml
+- ansible.builtin.import_tasks: start_docker.yml
+- ansible.builtin.import_tasks: check_docker_root.yml
+- ansible.builtin.import_tasks: check_containerd_root.yml

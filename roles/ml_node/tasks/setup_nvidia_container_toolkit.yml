@@ -1,0 +1,58 @@
+---
+- name: Install required packages for NVIDIA Container Toolkit
+  ansible.builtin.apt:
+    name:
+      - curl
+      - gnupg
+    state: present
+    update_cache: true
+
+- name: Add NVIDIA GPG key
+  ansible.builtin.shell: |
+    set -o pipefail
+    curl -fsSL https://nvidia.github.io/libnvidia-container/gpgkey | gpg --dearmor -o /usr/share/keyrings/nvidia-container-toolkit-keyring.gpg
+  args:
+    executable: /bin/bash
+    creates: /usr/share/keyrings/nvidia-container-toolkit-keyring.gpg
+
+- name: Set architecture for NVIDIA repository
+  ansible.builtin.set_fact:
+    nvidia_repo_arch: "{{ 'amd64' if ansible_architecture == 'x86_64' else 'arm64' if ansible_architecture == 'aarch64' else 'amd64' }}"
+
+- name: Add NVIDIA Container Toolkit repository
+  ansible.builtin.copy:
+    dest: /etc/apt/sources.list.d/nvidia-container-toolkit.list
+    content: deb [signed-by=/usr/share/keyrings/nvidia-container-toolkit-keyring.gpg] https://nvidia.github.io/libnvidia-container/stable/deb/{{ nvidia_repo_arch }} /
+    owner: root
+    group: root
+    mode: "0644"
+
+- name: Update apt cache after adding NVIDIA repository
+  ansible.builtin.apt:
+    update_cache: true
+
+- name: Install NVIDIA Container Toolkit
+  ansible.builtin.apt:
+    name: nvidia-container-toolkit
+    state: present
+
+- name: Check if NVIDIA runtime is already configured
+  ansible.builtin.shell: |
+    if [ -f /etc/docker/daemon.json ]; then
+      grep -q "nvidia" /etc/docker/daemon.json && echo "configured" || echo "not_configured"
+    else
+      echo "not_configured"
+    fi
+  register: nvidia_runtime_check
+  changed_when: false
+
+- name: Configure NVIDIA Container Toolkit
+  ansible.builtin.command: nvidia-ctk runtime configure --runtime=docker
+  when: nvidia_runtime_check.stdout != "configured"
+  register: nvidia_configured
+
+- name: Restart Docker to apply NVIDIA Container Toolkit configuration
+  ansible.builtin.service:
+    name: docker
+    state: restarted
+  when: nvidia_configured.changed | default(false)

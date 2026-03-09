@@ -1,0 +1,9 @@
+---
+- name: Deploy ML Node
+  hosts: node_ml_deploy
+  become: true
+
+  roles:
+    - docker
+    - ml_node
+    - iptables

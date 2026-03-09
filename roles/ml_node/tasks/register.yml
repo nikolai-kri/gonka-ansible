@@ -1,0 +1,36 @@
+---
+- name: Build body_json with dynamic key
+  ansible.builtin.set_fact:
+    body_json: >-
+      {{
+        {
+          'id': inventory_hostname,
+          'host': inference_node_ip,
+          'inference_port': 5050,
+          'poc_port': 8080,
+          'max_concurrent': 500,
+          'models': {
+            model_name: {
+              'args': model_args
+            }
+          }
+        }
+      }}
+
+- ansible.builtin.debug:
+    var: body_json
+
+- name: Registering Inference Nodes with the Network Node
+  ansible.builtin.uri:
+    url: http://localhost:9200/admin/v1/nodes
+    method: POST
+    headers:
+      Content-Type: application/json
+    body: "{{ body_json }}"
+    body_format: json
+    return_content: true
+  register: register_node_response
+  delegate_to: "{{ host }}"
+
+- ansible.builtin.debug:
+    var: register_node_response.json

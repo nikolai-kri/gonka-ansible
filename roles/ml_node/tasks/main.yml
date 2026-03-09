@@ -1,0 +1,8 @@
+---
+- ansible.builtin.import_tasks: setup_nvidia_container_toolkit.yml
+- ansible.builtin.import_tasks: install_huggingface_cli.yml
+- ansible.builtin.import_tasks: download_gonka_git.yml
+- ansible.builtin.import_tasks: generate_config.yml
+- ansible.builtin.import_tasks: pre_download_model_weights.yml
+- ansible.builtin.import_tasks: launch.yml
+- ansible.builtin.import_tasks: register.yml

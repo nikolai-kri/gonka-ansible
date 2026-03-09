@@ -1,0 +1,15 @@
+---
+- name: Copy check files to project root
+  ansible.builtin.copy:
+    src: "files/{{ item }}"
+    dest: "{{ nvme_dir }}/gonka/deploy/join/{{ item | basename }}"
+    mode: "0755"
+  loop:
+    - check_node_config.sh
+    - check_video_tensorflow.py
+    - check_video.py
+    - diagnose.sh
+    - start_vllm.sh
+    - update_node_max_model_len.sh
+  loop_control:
+    label: "{{ item | basename }}"

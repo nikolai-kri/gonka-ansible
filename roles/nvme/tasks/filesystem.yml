@@ -1,0 +1,5 @@
+---
+- name: Create filesystem on NVMe device
+  filesystem:
+    dev: "{{ nvme_device }}"
+    fstype: "{{ nvme_fstype }}"

@@ -1,0 +1,30 @@
+---
+- name: Ensure NVMe mount point exists
+  ansible.builtin.file:
+    path: "{{ nvme_mount_point }}"
+    state: directory
+
+- name: Ensure Docker data root directory on NVMe exists
+  ansible.builtin.file:
+    path: "{{ docker_data_root }}"
+    state: directory
+    owner: root
+    group: root
+    mode: "0711"
+
+- name: Configure Docker to use NVMe data-root
+  ansible.builtin.copy:
+    dest: /etc/docker/daemon.json
+    content: |
+      {
+        "data-root": "{{ docker_data_root }}"
+      }
+    owner: root
+    group: root
+    mode: "0644"
+  register: docker_config_changed
+
+- name: Restart Docker to apply new data-root configuration
+  ansible.builtin.service:
+    name: docker
+    state: restarted

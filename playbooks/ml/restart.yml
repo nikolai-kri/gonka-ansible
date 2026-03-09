@@ -1,0 +1,23 @@
+---
+- name: Restart ML Nides
+  hosts: node_ml_deploy
+  become: true
+
+  tasks:
+    - name: Restart MLNode compose
+      community.docker.docker_compose_v2:
+        project_src: "{{ nvme_dir }}/gonka/deploy/join"
+        files:
+          - docker-compose.mlnode.yml
+        state: restarted
+#
+#    - name: Pause for some seconds
+#      ansible.builtin.pause:
+#        seconds: 10
+#
+#    - name: Run MLNode compose
+#      community.docker.docker_compose_v2:
+#        project_src: /home/ubuntu/gonka/deploy/join
+#        files:
+#          - docker-compose.mlnode.yml
+#        state: present

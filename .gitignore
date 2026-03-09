@@ -1,0 +1,37 @@
+# IDE
+.idea/
+.vscode/
+
+# Logs
+logs/
+
+# Backup and sensitive data (never commit)
+backup/
+
+# Local inventory (copy from .example files and fill in your data)
+inventory/hosts
+inventory/hosts.yml
+inventory/host_vars/
+inventory/group_vars/*
+!inventory/group_vars/*.example
+
+# Local overrides and personal files (scripts, notes, configs)
+local/
+
+# Ansible
+*.retry
+
+# Ansible Vault password files
+.vault_pass
+.vault_pass.txt
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+venv/
+.venv/
+
+# Environment
+.env
+*.env

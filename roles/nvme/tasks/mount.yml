@@ -1,0 +1,16 @@
+---
+- name: Ensure mountpoint directory exists
+  ansible.builtin.file:
+    path: "{{ nvme_dir }}"
+    state: directory
+    owner: "{{ nvme_owner }}"
+    group: "{{ nvme_owner }}"
+    mode: "0755"
+
+- name: Mount NVMe and add to fstab
+  mount:
+    path: "{{ nvme_dir }}"
+    src: "{{ nvme_device }}"
+    fstype: "{{ nvme_fstype }}"
+    opts: defaults,nofail
+    state: mounted

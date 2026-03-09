@@ -1,0 +1,45 @@
+---
+- name: Stop imference
+  hosts: ml_node
+  become: true
+
+  tasks:
+    - delegate_to: op1_net
+      block:
+        - name: Stop inference mode
+          ansible.builtin.uri:
+            url: http://{{ ansible_facts.default_ipv4.address }}:8080/api/v1/stop
+            method: POST
+          register: result
+
+        - ansible.builtin.debug:
+            var: result
+
+        - name: Get state
+          ansible.builtin.uri:
+            url: http://{{ ansible_facts.default_ipv4.address }}:8080/api/v1/state
+            method: GET
+          register: result
+
+        - ansible.builtin.debug:
+            var: result
+
+        - name: Get nodes
+          ansible.builtin.uri:
+            url: http://localhost:9200/admin/v1/nodes
+            method: GET
+          register: result2
+          run_once: true
+
+        - ansible.builtin.debug:
+            var: result2
+
+        - name: Get report
+          ansible.builtin.uri:
+            url: http://localhost:9200/admin/v1/setup/report
+            method: GET
+          register: result3
+          run_once: true
+
+        - ansible.builtin.debug:
+            var: result3

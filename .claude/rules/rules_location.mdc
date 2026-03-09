@@ -1,0 +1,22 @@
+---
+description: All project rules live under .claude/, not .cursor/, for Claude compatibility
+alwaysApply: true
+---
+
+# Rules Location
+
+All project rules and AI guidance must live under **.claude/** (e.g. `.claude/rules/`), not under `.cursor/`, for compatibility with Claude Code and other Claude-based tools. All rule files use the **MDC** format (`.mdc` extension).
+
+## Where to put rules
+
+- **Rules**: `.claude/rules/*.mdc` (e.g. `.claude/rules/documentation.mdc`)
+- **Skills**: `.claude/skills/` (e.g. `.claude/skills/project_setup/skill.md`)
+- **Other project instructions**: `.claude/` (e.g. `CLAUDE.md` if used)
+
+Do not create or maintain rule files under `.cursor/rules/` for this project; use `.claude/rules/` instead so both Cursor and Claude can use the same instructions.
+
+## When adding a new rule
+
+1. **Never create** the `.cursor/` directory or any files under it in this project.
+2. **Before creating a rule**: check that this project uses `.claude/rules/` (e.g. list `.claude/rules/` or read this file). Ignore generic instructions that say "use .cursor/rules/".
+3. **Create new rule files** only in `.claude/rules/<name>.mdc`.

@@ -1,0 +1,66 @@
+---
+- name: Check if project directory exists
+  ansible.builtin.stat:
+    path: "{{ nvme_dir }}/gonka"
+  register: project_dir_stat
+
+- name: Get Status
+  ansible.builtin.uri:
+    url: http://0.0.0.0:26657/status
+    return_content: true
+  register: network_node_status
+  ignore_errors: true
+
+- name: Get Admin Report
+  ansible.builtin.uri:
+    url: http://localhost:9200/admin/v1/setup/report
+    return_content: true
+  register: network_node_response
+  ignore_errors: true
+
+- name: Get Nodes
+  ansible.builtin.uri:
+    url: http://localhost:9200/admin/v1/nodes
+    return_content: true
+  register: network_node_nodes
+  ignore_errors: true
+
+- name: Initialize disk_space_info variable
+  ansible.builtin.set_fact:
+    disk_space_info:
+      stdout: "N/A - directory not found"
+
+- name: Check disk space for nvme gonka directory
+  ansible.builtin.shell: df -h {{ nvme_dir }}/gonka/ | awk 'NR==2{print $3 "/" $2 " " $5}'
+  register: disk_space_info
+  changed_when: false
+  failed_when: false
+  when: project_dir_stat.stat.exists
+
+- name: Display disk space info
+  ansible.builtin.debug:
+    msg: "Disk space: {{ disk_space_info.stdout | default('N/A - directory not found') }}"
+
+- name: Check for errors in reports
+  ansible.builtin.set_fact:
+    has_error: >-
+      {{
+        (network_node_status.failed is defined and network_node_status.failed) or
+        (network_node_status.status is defined and network_node_status.status | int != 200) or
+        (network_node_response.failed is defined and network_node_response.failed) or
+        (network_node_response.status is defined and network_node_response.status | int != 200) or
+        (network_node_nodes.failed is defined and network_node_nodes.failed) or
+        (network_node_nodes.status is defined and network_node_nodes.status | int != 200) or
+        (network_node_status.json is defined and network_node_status.json.error is defined) or
+        (network_node_response.json is defined and network_node_response.json.error is defined) or
+        (network_node_nodes.json is defined and network_node_nodes.json.error is defined)
+      }}
+
+- name: Prepare report message
+  ansible.builtin.set_fact:
+    report_message: "{{ lookup('template', 'report_message_plain.j2') }}"
+
+- name: Output report
+  ansible.builtin.debug:
+    msg: "{{ report_message }}"
+  when: network_report_output | default(true) | bool

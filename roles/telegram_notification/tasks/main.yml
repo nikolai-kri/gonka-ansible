@@ -1,0 +1,43 @@
+---
+- ansible.builtin.import_tasks: validate.yml
+- name: Choose message template
+  ansible.builtin.set_fact:
+    telegram_template: "{{ telegram_error_template if (has_error | default(false) | bool) else telegram_report_template }}"
+  when:
+    - has_error is defined
+    - telegram_template is not defined or telegram_template | length == 0
+
+- name: Build message from template
+  ansible.builtin.set_fact:
+    telegram_message: "{{ lookup('template', telegram_template) }}"
+  when:
+    - telegram_template is defined
+    - telegram_template | length > 0
+
+- name: Send message to Telegram
+  ansible.builtin.uri:
+    url: "https://api.telegram.org/bot{{ telegram_bot_token }}/sendMessage"
+    method: POST
+    headers:
+      Content-Type: "application/json"
+    body_format: json
+    body:
+      chat_id: "{{ telegram_chat_id }}"
+      text: "{{ telegram_message }}"
+      parse_mode: "{{ telegram_parse_mode }}"
+    status_code: [200]
+  when:
+    - telegram_bot_token is defined
+    - telegram_chat_id is defined
+    - telegram_bot_token | length > 0
+    - telegram_chat_id | length > 0
+    - telegram_message is defined
+    - telegram_message | length > 0
+  register: telegram_result
+  ignore_errors: true
+
+- ansible.builtin.import_tasks: notify_result.yml
+- name: Status output
+  ansible.builtin.debug:
+    msg: "{{ telegram_message }}"
+  when: telegram_message is defined and telegram_message | length > 0

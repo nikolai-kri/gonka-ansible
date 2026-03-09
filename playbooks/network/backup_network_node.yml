@@ -1,0 +1,68 @@
+---
+- name: Copy Configuration Files from network_node to localhost
+  hosts: network_node
+
+  vars:
+    source_dir: "gonka/deploy/join"
+    dest_dir: "{{ playbook_dir }}/../../backup"
+
+  tasks:
+    - name: Fetch .dapi/api-config.yaml from network node
+      ansible.builtin.fetch:
+        src: "{{ nvme_dir }}/{{ source_dir }}/.dapi/api-config.yaml"
+        dest: "{{ dest_dir }}/{{ inventory_hostname }}/.dapi/api-config.yaml"
+        flat: true
+
+    - name: Fetch .dapi/gonka.db from network node
+      ansible.builtin.fetch:
+        src: "{{ nvme_dir }}/{{ source_dir }}/.dapi/gonka.db"
+        dest: "{{ dest_dir }}/{{ inventory_hostname }}/.dapi/gonka.db"
+        flat: true
+
+    - name: Synchronize .inference/config/ directory from network node
+      ansible.builtin.shell: >
+        rsync
+        --rsync-path="sudo rsync"
+        -avz
+        --delete
+        --out-format=''
+        -e "ssh -i {{ ansible_ssh_private_key_file }} -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null"
+        {{ ansible_user }}@{{ ansible_host }}:{{ nvme_dir }}/{{ source_dir }}/.inference/config/
+        {{ dest_dir }}/{{ inventory_hostname }}/.inference/config/
+        2>/dev/null || true
+      delegate_to: localhost
+      connection: local
+      become: false
+      changed_when: false
+
+    - name: Synchronize .inference/keyring-file/ directory from network node
+      ansible.builtin.shell: >
+        rsync
+        --rsync-path="sudo rsync"
+        -avz
+        --delete
+        --out-format=''
+        -e "ssh -i {{ ansible_ssh_private_key_file }} -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null"
+        {{ ansible_user }}@{{ ansible_host }}:{{ nvme_dir }}/{{ source_dir }}/.inference/keyring-file/
+        {{ dest_dir }}/{{ inventory_hostname }}/.inference/keyring-file/
+        2>/dev/null || true
+      delegate_to: localhost
+      connection: local
+      become: false
+      changed_when: false
+
+    - name: Synchronize .tmkms/ directory from network node
+      ansible.builtin.shell: >
+        rsync
+        --rsync-path="sudo rsync"
+        -avz
+        --delete
+        --out-format=''
+        -e "ssh -i {{ ansible_ssh_private_key_file }} -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null"
+        {{ ansible_user }}@{{ ansible_host }}:{{ nvme_dir }}/{{ source_dir }}/.tmkms/
+        {{ dest_dir }}/{{ inventory_hostname }}/.tmkms/
+        2>/dev/null || true
+      delegate_to: localhost
+      connection: local
+      become: false
+      changed_when: false

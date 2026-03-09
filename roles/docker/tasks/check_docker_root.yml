@@ -1,0 +1,22 @@
+---
+- name: Check current Docker data root
+  ansible.builtin.command: docker info --format '{{ "{{" }}.DockerRootDir{{ "}}" }}'
+  register: docker_current_root
+  changed_when: false
+  failed_when: false
+
+- name: Display current Docker data root
+  ansible.builtin.debug:
+    msg: "Current Docker data root: {{ docker_current_root.stdout | default('Docker not running or not installed') }}"
+
+- name: Check disk usage for current Docker data root
+  ansible.builtin.command: df -h {{ docker_current_root.stdout | default('/var/lib/docker') }}
+  register: docker_disk_usage
+  changed_when: false
+  failed_when: false
+  when: docker_current_root.stdout is defined
+
+- name: Display disk usage
+  ansible.builtin.debug:
+    var: docker_disk_usage.stdout_lines
+  when: docker_disk_usage.stdout_lines is defined

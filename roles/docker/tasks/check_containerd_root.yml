@@ -1,0 +1,53 @@
+---
+- name: Check if containerd config file exists
+  ansible.builtin.stat:
+    path: /etc/containerd/config.toml
+  register: containerd_config_file
+  changed_when: false
+
+- name: Check containerd service status
+  ansible.builtin.command: systemctl is-active containerd
+  register: containerd_service_status
+  changed_when: false
+  failed_when: false
+
+- name: Get containerd root path from config
+  ansible.builtin.shell: |
+    if [ -f /etc/containerd/config.toml ]; then
+      # Extract root path from config.toml
+      grep -E '^\s*root\s*=' /etc/containerd/config.toml | head -1 | sed -E 's/^\s*root\s*=\s*"([^"]+)".*/\1/' || echo "/var/lib/containerd"
+    else
+      echo "/var/lib/containerd"
+    fi
+  register: containerd_root_path
+  changed_when: false
+  failed_when: false
+
+- name: Display containerd configuration info
+  ansible.builtin.debug:
+    msg:
+      - "Containerd config file: {{ '/etc/containerd/config.toml' if containerd_config_file.stat.exists else 'not found (using defaults)' }}"
+      - "Containerd root path: {{ containerd_root_path.stdout }}"
+      - "Containerd service: {{ containerd_service_status.stdout | default('unknown') }}"
+
+- name: Check disk usage for containerd root
+  ansible.builtin.command: df -h {{ containerd_root_path.stdout }}
+  register: containerd_disk_usage
+  changed_when: false
+  failed_when: false
+
+- name: Display containerd disk usage
+  ansible.builtin.debug:
+    var: containerd_disk_usage.stdout_lines
+  when: containerd_disk_usage.stdout_lines is defined
+
+- name: Check size of containerd directory
+  ansible.builtin.command: du -sh {{ containerd_root_path.stdout }} 2>/dev/null || echo "Directory not found or empty"
+  register: containerd_dir_size
+  changed_when: false
+  failed_when: false
+
+- name: Display containerd directory size
+  ansible.builtin.debug:
+    msg: "Containerd directory size: {{ containerd_dir_size.stdout }}"
+  when: containerd_dir_size.stdout is defined

@@ -1,0 +1,4 @@
+---
+nvme_mount_point: "{{ nvme_dir }}"
+docker_data_root: "{{ nvme_dir }}/docker"
+containerd_root: "{{ nvme_dir }}/containerd"

@@ -1,0 +1,9 @@
+---
+- name: Generate config.env
+  ansible.builtin.template:
+    src: config.j2
+    dest: "{{ nvme_dir }}/gonka/deploy/join/config.env"
+- name: Copy node-config.env
+  ansible.builtin.copy:
+    src: "{{ node_config }}"
+    dest: "{{ nvme_dir }}/gonka/deploy/join/node-config.json"

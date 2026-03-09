@@ -1,0 +1,38 @@
+---
+- name: Register Network Node
+  hosts: node_net_deploy
+  become: true
+
+  tasks:
+    - name: Create ML Operational Key
+      ansible.builtin.shell: |
+        cd {{ nvme_dir }}/gonka/deploy/join
+        docker compose -f docker-compose.yml -f docker-compose.mlnode.yml down
+        sleep 2
+        source config.env && docker compose up tmkms node -d --no-deps
+        docker compose up --no-deps api -d
+        sleep 2
+        docker compose exec api /bin/sh -c "printf '%s\n%s\n' \"${KEYRING_PASSWORD}\" \"${KEYRING_PASSWORD}\" | inferenced keys add \"${KEY_NAME}\" --keyring-backend file"
+      ignore_errors: true
+      args:
+        executable: /bin/bash
+      register: created_ml_output
+
+    - name: Create ML Operational Key Output
+      ansible.builtin.debug:
+        msg: "{{ inventory_hostname }}: {{ created_ml_output.stdout }}"
+
+    - name: Register Host
+      ansible.builtin.shell: |
+        cd {{ nvme_dir }}/gonka/deploy/join
+        source config.env && docker compose exec api /bin/sh -c 'inferenced register-new-participant ${DAPI_API__PUBLIC_URL} ${ACCOUNT_PUBKEY} --node-address ${DAPI_CHAIN_NODE__SEED_API_URL}'
+        sleep 65
+        docker compose down api
+      ignore_errors: true
+      args:
+        executable: /bin/bash
+      register: registered_host_output
+
+    - name: Register Host Output
+      ansible.builtin.debug:
+        msg: "{{ inventory_hostname }}: {{ registered_host_output.stdout }}"

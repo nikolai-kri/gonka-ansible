@@ -1,0 +1,76 @@
+---
+- name: Check Proof-of-Compute
+  hosts: node_ml_deploy
+  become: true
+
+  tasks:
+    - block:
+        - name: Stop inference mode
+          uri:
+            url: http://{{ ansible_facts.default_ipv4.address }}:8080/api/v1/stop
+            method: POST
+
+        - name: Pause network node api
+          community.docker.docker_container:
+            name: api
+            paused: true
+            docker_host: "unix:///var/run/docker.sock"
+          run_once: true
+          delegate_to: op2_net # Set to your network node host for this account
+
+        - name: Initialize POC generate
+          ansible.builtin.uri:
+            url: "http://{{ ansible_facts.default_ipv4.address }}:8080/api/v1/pow/init/generate"
+            method: POST
+            headers:
+              Content-Type: "application/json"
+            body_format: json
+            body:
+              node_id: 0
+              node_count: 1
+              block_hash: "LMA2F1ZMh99Rr224Du3L5+HpHyLpr8xZzz67lTnZJww="
+              block_height: 1
+              public_key: "Aytg6Ghy/QV+RxkC4fSS5O3Hii5HBkNfLvx+BjfVYCfS"
+              batch_size: 1
+              r_target: 10.0
+              fraud_threshold: 0.01
+              params:
+                dim: 1792
+                n_layers: 64
+                n_heads: 64
+                n_kv_heads: 64
+                vocab_size: 8196
+                ffn_dim_multiplier: 10.0
+                multiple_of: 8192
+                norm_eps: 1e-5
+                rope_theta: 10000.0
+                use_scaled_rope: false
+                seq_len: 256
+              url: "http://{{ host }}:9100"
+            return_content: true
+          register: result
+          delay: 5
+          ignore_errors: true
+
+        - debug:
+            var: result
+
+        - name: Collect unique network node hosts
+          set_fact:
+            unique_hosts: "{{ groups['node_ml_deploy'] | map('extract', hostvars, ['host']) | select('defined') | unique | list }}"
+          run_once: true
+          delegate_to: localhost
+
+        - name: Unpause network node api
+          community.docker.docker_container:
+            name: api
+            paused: false
+            docker_host: "unix:///var/run/docker.sock"
+          delegate_to: op2_net
+          run_once: true
+
+    - name: Check service availability on port 26657
+      ansible.builtin.uri:
+        url: "http://{{ poc_callback_url }}:26657"
+        method: HEAD
+        status_code: [200]

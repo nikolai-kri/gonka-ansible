@@ -1,0 +1,14 @@
+#SPDX-License-Identifier: MIT-0
+---
+galaxy_info:
+  description: Gather network node status, admin report, nodes, disk usage, and produce a plain-text report and has_error flag for downstream roles (e.g. telegram_notification).
+  license: MIT
+
+  min_ansible_version: "2.9"
+
+  galaxy_tags:
+    - network
+    - report
+    - gonka
+
+dependencies: []

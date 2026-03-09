@@ -1,0 +1,10 @@
+---
+- name: Deploy Network Node
+  hosts: node_net_deploy
+  become: true
+
+  roles:
+    # - nvme
+    - docker
+    - network_node
+    - check

@@ -1,0 +1,28 @@
+# Copy to inventory/hosts and fill in your host IPs and group membership.
+# Do not commit inventory/hosts to the repository.
+
+network_node:
+  hosts:
+    example_net:
+      ansible_host: 192.0.2.1
+
+ml_node:
+  hosts:
+    example_ml:
+      ansible_host: 192.0.2.2
+      inference_node_ip: 192.0.2.2  # preferably a private/local network address
+
+# Account groups: add your nodes to the appropriate account
+# example_account:
+#   hosts:
+#     example_net:
+#     example_ml:
+
+# Deployment groups (used by playbooks)
+# node_net_deploy:
+#   hosts:
+#     example_net:
+
+# node_ml_deploy:
+#   hosts:
+#     example_ml:

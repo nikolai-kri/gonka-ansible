@@ -1,0 +1,27 @@
+{{ inventory_hostname }} {{ ansible_host }}
+Height: {{ network_node_status.json.result.sync_info.latest_block_height | default('N/A') }}
+Disk: {{ disk_space_info.stdout | default('N/A') }}
+Issues:
+{% if network_node_response.json is defined and network_node_response.json.summary.issues is defined %}
+{% for issue in network_node_response.json.summary.issues %}
+  {{ issue }}
+{% endfor %}
+{% else %}
+  (none or N/A)
+{% endif %}
+Recommendations:
+{% if network_node_response.json is defined and network_node_response.json.summary.recommendations is defined %}
+{% for recommendation in network_node_response.json.summary.recommendations %}
+  {{ recommendation }}
+{% endfor %}
+{% else %}
+  (none or N/A)
+{% endif %}
+Nodes:
+{% if network_node_nodes.json is defined %}
+{% for node in network_node_nodes.json %}
+  {{ node.node.id }} {{ node.node.host }} {{ node.state.current_status }} Epoch: {{ node.state.admin_state.epoch | default('N/A') }}
+{% endfor %}
+{% else %}
+  (none or N/A)
+{% endif %}

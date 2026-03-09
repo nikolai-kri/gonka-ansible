@@ -1,0 +1,24 @@
+---
+description: Use short, verb-led commit messages
+alwaysApply: true
+---
+
+# Commit message style
+
+- **Short and concise**: one line under ~72 characters when possible; add a body only if you need to explain why.
+- **Start with a verb in past tense** (e.g. "Added", "Fixed", "Updated", "Removed", "Refactored", "Renamed").
+- **No period** at the end of the subject line.
+
+## Good examples
+
+- `Added telegram_notification role`
+- `Fixed iptables condition for ml_firewall group`
+- `Updated network_report template for missing JSON`
+- `Removed ml_gcore, use ml_firewall`
+- `Refactored check playbooks to use network_report role`
+
+## Avoid
+
+- Vague: "Changes", "WIP", "Fix stuff"
+- Imperative/present: "Add role" → use "Added role"
+- Long subject with multiple ideas — split into separate commits when possible

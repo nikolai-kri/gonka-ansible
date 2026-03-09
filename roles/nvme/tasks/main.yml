@@ -1,0 +1,7 @@
+---
+- name: Discover block devices
+  ansible.builtin.import_tasks: discover.yml
+- name: Setup filesystem
+  ansible.builtin.import_tasks: filesystem.yml
+- name: Setup mount
+  ansible.builtin.import_tasks: mount.yml

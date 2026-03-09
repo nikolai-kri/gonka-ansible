@@ -1,0 +1,15 @@
+#SPDX-License-Identifier: MIT-0
+---
+# Optional: override in inventory/group_vars/all (telegram_bot_token, telegram_chat_id)
+# telegram_bot_token: ""
+# telegram_chat_id: ""
+
+# Parse mode for Telegram sendMessage API (HTML or Markdown)
+telegram_parse_mode: "HTML"
+
+# Default tracker URL for report links (override in group_vars/all if needed)
+tracker_url: "https://tracker.gonka.hyperfusion.io"
+
+# Template names when choosing by has_error (network check flow)
+telegram_error_template: "error_message_template.j2"
+telegram_report_template: "report_message_template.j2"

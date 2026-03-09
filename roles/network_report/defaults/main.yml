@@ -1,0 +1,4 @@
+#SPDX-License-Identifier: MIT-0
+---
+# Whether to print the plain report to the console at the end
+network_report_output: false
