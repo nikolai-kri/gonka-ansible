@@ -1,0 +1,21 @@
+---
+- name: Get Status
+  ansible.builtin.uri:
+    url: http://0.0.0.0:26657/status
+    return_content: true
+  register: network_node_status
+  ignore_errors: true
+
+- name: Get Admin Report
+  ansible.builtin.uri:
+    url: http://localhost:9200/admin/v1/setup/report
+    return_content: true
+  register: network_node_response
+  ignore_errors: true
+
+- name: Get Nodes
+  ansible.builtin.uri:
+    url: http://localhost:9200/admin/v1/nodes
+    return_content: true
+  register: network_node_nodes
+  ignore_errors: true

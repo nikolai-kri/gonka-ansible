@@ -1,7 +1,11 @@
 ---
-- name: Download Deployment Files
+- name: "[Server] Download Deployment Files: https://gonka.ai/host/quickstart/#server-download-deployment-files"
   ansible.builtin.git:
     repo: https://github.com/gonka-ai/gonka.git
     dest: "{{ nvme_dir }}/gonka"
     version: main
     update: false
+
+- name: Show deployment directory
+  ansible.builtin.debug:
+    msg: "Deployment files in: {{ nvme_dir }}/gonka"

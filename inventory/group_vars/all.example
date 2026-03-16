@@ -3,16 +3,19 @@
 
 ansible_user: ubuntu
 ansible_ssh_private_key_file: ~/.ssh/your-key.pem
-
 ansible_python_interpreter: /usr/bin/python3
 
 # Keyring and seed (set for your network)
 # keyring_password: ""
-# seed_host: "node.example.com"
+seed_host: node1.gonka.ai
+
+# Deploy and cache paths: use ~ or absolute path, no trailing slash
+nvme_dir: "~"
+hf_cache: "~/hf_cache"
 
 # RPC and dashboard URLs (defaults work for the public Gonka network)
-rpc_server_url_1: "http://node1.gonka.ai:8000/chain-rpc"
-rpc_server_url_2: "http://node2.gonka.ai:8000/chain-rpc"
+rpc_server_url_1: "http://node1.gonka.ai:8000/chain-rpc/"
+rpc_server_url_2: "http://node2.gonka.ai:8000/chain-rpc/"
 dashboard_url: "http://node3.gonka.ai:8000"
 tracker_url: "https://tracker.gonka.hyperfusion.io"
 

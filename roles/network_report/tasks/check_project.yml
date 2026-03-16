@@ -1,0 +1,5 @@
+---
+- name: Check if project directory exists
+  ansible.builtin.stat:
+    path: "{{ nvme_dir }}/gonka"
+  register: project_dir_stat

@@ -1,5 +1,5 @@
 ---
-- name: Source env and pull docker images
+- name: "1. [Server] Pull Docker Images (Containers): https://gonka.ai/host/quickstart/#1-server-pull-docker-images-containers"
   ansible.builtin.shell: "cd {{ nvme_dir }}/gonka/deploy/join && source config.env && docker compose -f docker-compose.yml pull"
   args:
     executable: /bin/bash

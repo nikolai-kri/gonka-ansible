@@ -1,7 +1,7 @@
 # Copy to inventory/group_vars/nodeN (or nodeN.yml) for each node and fill in.
 # Example: node1.yml, node2, etc. Do not commit files with real host IPs or secrets.
 
-account_name: gonka-account-key
+account_name: gonka-account-1
 
 host: 192.0.2.1
 poc_callback_url: 192.0.2.1

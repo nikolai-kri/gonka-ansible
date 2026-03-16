@@ -4,7 +4,7 @@
   become: true
 
   tasks:
-    - name: Create ML Operational Key
+    - name: "3. Complete Key Setup and Host Registration: [link](https://gonka.ai/host/quickstart/#31-server-create-ml-operational-key)"
       ansible.builtin.shell: |
         cd {{ nvme_dir }}/gonka/deploy/join
         docker compose -f docker-compose.yml -f docker-compose.mlnode.yml down

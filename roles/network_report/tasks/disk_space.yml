@@ -1,0 +1,16 @@
+---
+- name: Initialize disk_space_info variable
+  ansible.builtin.set_fact:
+    disk_space_info:
+      stdout: "N/A - directory not found"
+
+- name: Check disk space for nvme gonka directory
+  ansible.builtin.shell: df -h {{ nvme_dir }}/gonka/ | awk 'NR==2{print $3 "/" $2 " " $5}'
+  register: disk_space_info
+  changed_when: false
+  failed_when: false
+  when: project_dir_stat.stat.exists
+
+- name: Display disk space info
+  ansible.builtin.debug:
+    msg: "Disk space: {{ disk_space_info.stdout | default('N/A - directory not found') }}"

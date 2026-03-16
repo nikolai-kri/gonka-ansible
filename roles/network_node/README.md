@@ -3,6 +3,11 @@ Role Name
 
 A brief description of the role goes here.
 
+Deployment Files (gonka repo)
+-----------------------------
+
+The role clones the `gonka` repository (https://github.com/gonka-ai/gonka.git) to the node for deployment files. Documentation: <URL>.
+
 Requirements
 ------------
 

@@ -1,9 +1,10 @@
 ---
-- name: Generate config.env
+- name: "[Server] Setup Environment Variables: https://gonka.ai/host/quickstart/#server-setup-environment-variables"
   ansible.builtin.template:
     src: config.j2
     dest: "{{ nvme_dir }}/gonka/deploy/join/config.env"
-- name: Copy node-config.env
+
+- name: "[Server] Edit Inference Node Description for the Server: https://gonka.ai/host/quickstart/#server-edit-inference-node-description-for-the-server"
   ansible.builtin.copy:
     src: "{{ node_config }}"
     dest: "{{ nvme_dir }}/gonka/deploy/join/node-config.json"

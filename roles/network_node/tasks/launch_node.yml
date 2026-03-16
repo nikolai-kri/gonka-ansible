@@ -1,5 +1,5 @@
 ---
-- name: Start Initial Services
+- name: "2. [Server] Start Initial Services: https://gonka.ai/host/quickstart/#2-server-start-initial-services"
   ansible.builtin.shell: "cd {{ nvme_dir }}/gonka/deploy/join && source config.env && docker compose up tmkms node -d --no-deps"
   args:
     executable: /bin/bash

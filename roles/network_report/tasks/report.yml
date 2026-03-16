@@ -1,0 +1,24 @@
+---
+- name: Check for errors in reports
+  ansible.builtin.set_fact:
+    has_error: >-
+      {{
+        (network_node_status.failed is defined and network_node_status.failed) or
+        (network_node_status.status is defined and network_node_status.status | int != 200) or
+        (network_node_response.failed is defined and network_node_response.failed) or
+        (network_node_response.status is defined and network_node_response.status | int != 200) or
+        (network_node_nodes.failed is defined and network_node_nodes.failed) or
+        (network_node_nodes.status is defined and network_node_nodes.status | int != 200) or
+        (network_node_status.json is defined and network_node_status.json.error is defined) or
+        (network_node_response.json is defined and network_node_response.json.error is defined) or
+        (network_node_nodes.json is defined and network_node_nodes.json.error is defined)
+      }}
+
+- name: Prepare report message
+  ansible.builtin.set_fact:
+    report_message: "{{ lookup('template', 'report_message_plain.j2') }}"
+
+- name: Output report
+  ansible.builtin.debug:
+    msg: "{{ report_message }}"
+  when: network_report_output | default(true) | bool
